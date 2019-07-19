@@ -1,0 +1,36 @@
+Dataset webscraped from https://ikea.com of respective countries using webscraper.py.
+
+
+*chairs:
+india	
+hongkong
+Thailand
+
+
+*beds:
+india
+hongkong
+uae
+bahrain
+indonesia
+
+*dinnerware
+india
+hongkong
+uae
+bahrain
+indonesia
+latvia
+canada
+thailand
+usa
+united kingdom
+
+*wardrobe
+india
+uae
+bahrain
+hongkong
+indonesia
+latvia
+
