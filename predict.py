@@ -4,65 +4,64 @@ sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 import cv2
 import numpy as np
 from keras.models import load_model
-import sys
 import os
-
 from sklearn.metrics import accuracy_score, confusion_matrix
 
 
-model = load_model('5epochs.h5')
+model = load_model('20epochs.h5')
 
-testimglist = os.listdir(os.path.join(os.getcwd(),'data', 'test', 'test_images'))
+testimgtags = os.listdir(os.path.join(os.getcwd(),'data', 'test'))
 
-os.chdir(os.path.join(os.getcwd(),'data', 'test', 'test_images'))
-out = ""
+os.chdir(os.path.join(os.getcwd(),'data', 'test'))
 
-y_hat = []
-y = []
+
+# testimgarr = np.empty((0, 128, 128, 3), dtype="uint8")
+
 yc= []
 yc_hat = []
-j = 0
-o = 0
-for i in testimglist:
-	test_img = cv2.imread(i)
-	test_img = cv2.resize(test_img, (128,128))
-	test_img = np.reshape(test_img, [1, 128, 128, 3])
+
+for i in testimgtags:
+	testimg = cv2.imread(i)
+	testimg = cv2.resize(testimg, (128, 128))
+	testimg = np.reshape(testimg, [1]+list(testimg.shape))
 	
-	output = model.predict(test_img)
+	y_hat = model.predict_proba(testimg/255.0)
+	# testimgarr = np.append(testimgarr, testimg, axis=0)
 	
-	if output[0][0] == 1.0:
-		out = "bed"
-		o = 0
-	elif output[0][1] == 1.0:
-		out = "chair"
-		o = 1
-	elif output[0][2] == 1.0:
-		out = "dinnerware"
-		o = 2
-	elif output[0][3] == 1.0:
-		out = "wardrobe"
-		o = 3
+	index = np.argmax(y_hat, axis = 1)
+	prob = np.amax(y_hat, axis = 1)
+	if index == 0:
+		label = "bed"
+		yc_hat.append(0)
+	elif index == 1:
+		label = "chair"
+		yc_hat.append(1)
+	elif index == 2:
+		label = "dinnerware"
+		yc_hat.append(2)
+	elif index == 3:
+		label = "wardrobe"
+		yc_hat.append(3)
 
 	if i[:2] == 'be':
-		u = 0
-		p = "bed"
+		yc.append(0)
 	elif i[:2] == 'ch':
-		u = 1
-		p = "chair"
+		yc.append(1)
 	elif i[:2] == 'di':
-		u = 2
-		p = "dinnerware"
+		yc.append(2)
 	elif i[:2] == 'wa':
-		u = 3
-		p = "wardrobe"
+		yc.append(3)
 
-	y_hat.append(o)
-	y.append(u)
-	yc.append(p)
-	yc_hat.append(out)
-	print(output, i + " ------------> " + out)
-	j+=1
+	finallabel = "{}: {:.3f}%".format(label, prob[0]*100.0)
+	finaloutimg = cv2.putText(cv2.imread(i),finallabel, (25,50), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 255), 1)
+	cv2.imshow('output', finaloutimg)
+	cv2.waitKey(2500)
+	
+cv2.destroyAllWindows()
+print("Accuracy: %.2f " %(accuracy_score(yc, yc_hat)*100.0))
 
-print(accuracy_score(y, y_hat))
-print(confusion_matrix(yc, yc_hat, labels=["bed", "chair", "dinnerware", "wardrobe"]))
+
+# scores = model.evaluate(x_test, y_test, verbose=1)
+# print('Test loss:', scores[0])
+# print('Test accuracy:', scores[1])
 

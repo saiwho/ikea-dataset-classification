@@ -19,7 +19,7 @@ train_data_dir = 'data/train'
 validation_data_dir = 'data/valid'
 nb_train_samples = 1600
 nb_validation_samples = 400
-epochs = 5
+epochs = 20
 batch_size = 32
 chanDim = -1
 input_shape = (img_width, img_height, 3)
@@ -54,9 +54,9 @@ model.compile(loss='categorical_crossentropy',
 
 # Data Augmentation only used for rescaling planned to use for zoom and flipping for increasing data set
 train_datagen = ImageDataGenerator(
-    rescale=1. / 255)
+    rescale=1. / 255, horizontal_flip=True)
     # ,zoom_range=0.2,
-    # horizontal_flip=True)
+    
 
 test_datagen = ImageDataGenerator(rescale=1. / 255)
 
@@ -77,7 +77,7 @@ H = model.fit_generator(
     train_generator,
     steps_per_epoch=nb_train_samples//batch_size,
     epochs=epochs,
-    verbose = 2,
+    verbose = 1,
     validation_data=validation_generator,
     validation_steps=nb_validation_samples//batch_size,
     shuffle = True)
@@ -85,7 +85,7 @@ H = model.fit_generator(
 # print(validation_generator.class_indices)
 
 # Saving the model
-model.save('5epochs.h5')
+model.save(str(epochs)+'epochs.h5')
 
 from keras import backend as K
 K.clear_session()
@@ -103,4 +103,5 @@ plt.title("Training, Valid Accuracy & Loss")
 plt.xlabel("#Epoch")
 plt.ylabel("Accuracy & Loss")
 plt.legend()
+plt.savefig(str(epochs)+'epochs.png')
 plt.show()

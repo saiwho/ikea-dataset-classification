@@ -1,13 +1,18 @@
 import os 
+import sys
 
-imgdir = os.path.join(os.getcwd(), 'wardrobe')
+try:
+	dirname = sys.argv[1]
 
-os.chdir(imgdir)
+	imgdirpath = os.path.join(os.getcwd(),'data',dirname)
+
+	for i in os.listdir(imgdirpath):
+		x = 1 if dirname=='train' else 401
+		for j in os.listdir(os.path.join(imgdirpath,i)):
+			os.rename(os.path.join(imgdirpath,i,j), os.path.join(imgdirpath,i,i+str(x)+'.jpg'))
+			x += 1
 
 
-imglist = os.listdir(imgdir) 
+except IndexError as e:
+	print('Exception Occured: ', e)
 
-j = 1
-for i in imglist:
-	os.rename(i, 'wardrobe'+str(j)+'.jpg')
-	j += 1

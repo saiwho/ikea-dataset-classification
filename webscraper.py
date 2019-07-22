@@ -4,17 +4,17 @@ import urllib.request
 import os
 import sys
 
-j = 749
+j = 536
 k = 1
 
-os.chdir(os.path.join(os.getcwd(),'x'))
+os.chdir(os.path.join(os.getcwd(),'s'))
 
 while k<2:
 
 	if k == 1:
-		result = requests.get('https://www.ikea.com/gb/en/cat/side-plates-18863/')
+		result = requests.get('https://www.ikea.com/bh/en/cat/side-plates-18863/')
 	else:
-		result = requests.get("https://www.ikea.lv/en/products/bedroom/wardrobes/system-wardrobes?&name[]=PAX&page="+str(k))	
+		result = requests.get("https://www.ikea.lv/en/products/bedroom/wardrobes/system-wardrobes?&&page="+str(k))	
 
 	src = result.content	
 
