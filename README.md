@@ -1,5 +1,5 @@
 # ikea-dataset-classification
-IKEA Dataset Classification
+IKEA Dataset Multiclass Classification
 
 * train.py for training 
 * webscraper.py for scraping images from IKEA website
